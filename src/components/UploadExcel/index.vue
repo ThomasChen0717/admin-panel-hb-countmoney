@@ -1,10 +1,10 @@
 <template>
   <div>
-    <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
+    <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls" multiple @change="handleClick">
     <div class="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
-      Drop excel file here or
+      将文件拖到这里或者
       <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">
-        Browse
+        浏览
       </el-button>
     </div>
   </div>
@@ -21,34 +21,23 @@ export default {
   data() {
     return {
       loading: false,
-      excelData: {
-        header: null,
-        results: null
-      }
+      excelData: [{ header: null, result: null }]
     }
   },
   methods: {
-    generateData({ header, results }) {
-      this.excelData.header = header
-      this.excelData.results = results
-      this.onSuccess && this.onSuccess(this.excelData)
-    },
     handleDrop(e) {
       e.stopPropagation()
       e.preventDefault()
       if (this.loading) return
       const files = e.dataTransfer.files
-      if (files.length !== 1) {
-        this.$message.error('Only support uploading one file!')
-        return
-      }
-      const rawFile = files[0] // only use files[0]
-
-      if (!this.isExcel(rawFile)) {
+      const rawFiles = Array.from(files)
+      const excelFiles = rawFiles.filter((file) => this.isExcel(file))
+      if (excelFiles.length !== rawFiles.length) {
+        const nonExcelFiles = rawFiles.filter((file) => !this.isExcel(file))
         this.$message.error('Only supports upload .xlsx, .xls, .csv suffix files')
-        return false
+        console.log('Non-Excel files:', nonExcelFiles)
       }
-      this.upload(rawFile)
+      this.upload(excelFiles)
       e.stopPropagation()
       e.preventDefault()
     },
@@ -62,39 +51,50 @@ export default {
     },
     handleClick(e) {
       const files = e.target.files
-      const rawFile = files[0] // only use files[0]
-      if (!rawFile) return
-      this.upload(rawFile)
+      const rawFiles = Array.from(files)
+      if (!rawFiles) return
+      this.upload(rawFiles)
     },
-    upload(rawFile) {
-      this.$refs['excel-upload-input'].value = null // fix can't select the same excel
-
+    upload(rawFiles) {
       if (!this.beforeUpload) {
-        this.readerData(rawFile)
+        this.readerData(rawFiles)
         return
       }
-      const before = this.beforeUpload(rawFile)
+      const before = this.beforeUpload(rawFiles)
       if (before) {
-        this.readerData(rawFile)
+        this.readerData(rawFiles)
       }
     },
-    readerData(rawFile) {
+    readerData(rawFiles) {
       this.loading = true
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = e => {
-          const data = e.target.result
-          const workbook = XLSX.read(data, { type: 'array' })
-          const firstSheetName = workbook.SheetNames[0]
-          const worksheet = workbook.Sheets[firstSheetName]
-          const header = this.getHeaderRow(worksheet)
-          const results = XLSX.utils.sheet_to_json(worksheet)
-          this.generateData({ header, results })
+      Promise.all(
+        rawFiles.map((rawFile, index) => {
+          return new Promise((resolve) => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              const data = e.target.result
+              const workbook = XLSX.read(data, { type: 'array' })
+              const SheetName = workbook.SheetNames[0]
+              const worksheet = workbook.Sheets[SheetName]
+              const header = this.getHeaderRow(worksheet)
+              const results = XLSX.utils.sheet_to_json(worksheet)
+              const excel = { header: header, result: results }
+              this.excelData[index] = excel
+              resolve()
+            }
+            reader.readAsArrayBuffer(rawFile)
+          })
+        })
+      )
+        .then(() => {
           this.loading = false
-          resolve()
-        }
-        reader.readAsArrayBuffer(rawFile)
-      })
+          this.onSuccess && this.onSuccess(this.excelData)
+          this.excelData = [{ header: null, result: null }]
+        })
+        .catch((error) => {
+          this.loading = false
+          console.error('Error reading files:', error)
+        })
     },
     getHeaderRow(sheet) {
       const headers = []

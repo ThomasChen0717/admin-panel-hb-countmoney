@@ -1,42 +1,114 @@
 <template>
   <div class="app-container">
     <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload" />
+    <h2 class="table-title">{{ tableTitle }}</h2>
     <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
       <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />
     </el-table>
+    <pagination v-show="total > 0" :total="total" :page.sync="page" :page-sizes="[1]" :limit="1" layout="total, prev, pager, next, jumper" @pagination="getTable" />
+    <div class="update-button" style="text-align: center;">
+      <el-button style="margin:auto; margin-top:5vh" type="primary" @click="updateDatabase($event)">
+        更新
+      </el-button>
+    </div>
+    <el-dialog el-drag-dialog :visible.sync="dialogVisible">
+      <div class="response">
+        <h1>{{ this.response }}</h1>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-
+import { upload } from '@/api/excel'
+import Pagination from '@/components/Pagination'
 export default {
   name: 'UploadExcel',
-  components: { UploadExcelComponent },
+  components: { UploadExcelComponent, Pagination },
   data() {
     return {
+      dialogVisible: false,
+      excelData: [{ header: [], result: [] }],
       tableData: [],
-      tableHeader: []
+      tableHeader: [],
+      tableTitle: '',
+      files: [],
+      response: null,
+      page: 1,
+      total: 0
     }
   },
   methods: {
-    beforeUpload(file) {
-      const isLt1M = file.size / 1024 / 1024 < 1
+    getTable() {
+      const currentPageData = this.excelData[this.page - 1]
+      this.tableData = currentPageData.result
+      this.tableHeader = currentPageData.header
+      this.tableTitle = this.files[this.page - 1].name
+    },
+    beforeUpload(files) {
+      this.excelData = [{ header: [], result: [] }]
+      this.tableData = []
+      this.tableHeader = []
+      this.tableTitle = '' // Reset the tableTitle
+      this.page = 1 // Reset the page
+      this.total = 0 // Reset the total
 
-      if (isLt1M) {
+      let isLt1G = true
+
+      this.files.forEach((file) => {
+        if (file.size / 1024 / 1024 / 1024 >= 1) {
+          isLt1G = false // Set isLt1G to false if any file size exceeds 1GB
+          return
+        }
+      })
+
+      if (isLt1G) {
+        this.files = files
         return true
       }
 
       this.$message({
-        message: 'Please do not upload files larger than 1m in size.',
+        message: 'Please do not upload files larger than 1GB in size.',
         type: 'warning'
       })
+
       return false
     },
-    handleSuccess({ results, header }) {
-      this.tableData = results
-      this.tableHeader = header
+    handleSuccess(excelData) {
+      this.excelData = excelData
+      this.total = this.excelData.length
+      this.getTable()
+    },
+    updateDatabase(event) {
+      event.preventDefault()
+      const formData = new FormData()
+      this.files.forEach((file) => formData.append('file', file))
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      upload(formData, config).then(response => {
+        this.response = response.data
+        console.log(response.data)
+        this.dialogVisible = true
+      })
+        .catch(error => {
+          // Handle the error
+          console.error(error)
+        })
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .response{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30vh;
+
+  }
+</style>

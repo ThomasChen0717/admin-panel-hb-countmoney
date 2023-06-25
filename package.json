@@ -1,8 +1,8 @@
 {
-  "name": "vue-element-admin",
-  "version": "4.4.0",
-  "description": "A magical vue admin. An out-of-box UI solution for enterprise applications. Newest development stack of vue. Lots of awesome features",
-  "author": "Pan <panfree23@gmail.com>",
+  "name": "hb-web-admin",
+  "version": "1.0.0",
+  "description": "Database admin control webpage",
+  "author": "Thomas <thomaschenperiod3@gmail.com>",
   "scripts": {
     "dev": "vue-cli-service serve",
     "lint": "eslint --ext .js,.vue src",
@@ -31,6 +31,7 @@
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
+    "qs": "^6.11.2",
     "screenfull": "4.2.0",
     "script-loader": "0.7.2",
     "sortablejs": "1.8.4",
@@ -77,14 +78,14 @@
     "last 2 versions"
   ],
   "bugs": {
-    "url": "https://github.com/PanJiaChen/vue-element-admin/issues"
+    "url": ""
   },
   "engines": {
     "node": ">=8.9",
     "npm": ">= 3.0.0"
   },
   "keywords": [
-    "vue",
+    "hb-web",
     "admin",
     "dashboard",
     "element-ui",
@@ -92,7 +93,6 @@
     "admin-template",
     "management-system"
   ],
-  "license": "MIT",
   "lint-staged": {
     "src/**/*.{js,vue}": [
       "eslint --fix",
@@ -106,6 +106,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PanJiaChen/vue-element-admin.git"
+    "url": ""
   }
 }
