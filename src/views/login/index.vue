@@ -34,7 +34,7 @@
             placeholder="密码"
             name="password"
             tabindex="2"
-            autocomplete="on"
+            autocomplete="off"
             @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
             @keyup.enter.native="handleLogin"
@@ -48,6 +48,9 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <div style="position:relative">
+        <el-button class="register-button" type="primary" @click="$router.push('/register')">
+          注册
+        </el-button>
         <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
           第三方登录
         </el-button>
@@ -181,7 +184,7 @@ $bg:#283443;
 $light_gray:#fff;
 $cursor: #fff;
 
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
+@supports (-webkit-mask: none) and (not (caret-color: $cursor)) {
   .login-container .el-input input {
     color: $cursor;
   }
@@ -284,9 +287,17 @@ $light_gray:#eee;
 
   .thirdparty-button {
     position: relative;
-    left: 75%;
+    right: 0%;
+    left:3%;
     bottom: 15px;
+    width:30%
 
+  }
+  .register-button{
+    position: relative;
+    left: 0%;
+    bottom: 15px;
+    width:65%
   }
 
   @media only screen and (max-width: 470px) {

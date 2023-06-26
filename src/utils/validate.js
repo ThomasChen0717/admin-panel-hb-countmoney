@@ -1,3 +1,4 @@
+import { checkDisplayName, checkUsername } from '@/api/user'
 
 /**
  * @param {string} path
@@ -72,4 +73,25 @@ export function isArray(arg) {
     return Object.prototype.toString.call(arg) === '[object Array]'
   }
   return Array.isArray(arg)
+}
+/**
+ * @param {string} Username
+ * @returns {Boolean}
+ */
+export function validUsername(Username) {
+  return checkUsername(Username).then(response => {
+    const { data } = response
+    return data
+  })
+}
+
+/**
+ * @param {string} DisplayName
+ * @returns {Boolean}
+ */
+export function validDisplayName(DisplayName) {
+  return checkDisplayName(DisplayName).then(response => {
+    const { data } = response
+    return data
+  })
 }

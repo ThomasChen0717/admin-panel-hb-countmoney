@@ -2,8 +2,8 @@
   <div class="dashboard-editor-container">
     <div class=" clearfix">
       <pan-thumb :image="avatar" style="float: left">
-        Your roles:
-        <span v-for="item in roles" :key="item" class="pan-info-roles">{{ item }}</span>
+        Your role:
+        <span key="role" class="pan-info-role">{{ role }}</span>
       </pan-thumb>
       <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
       <div class="info-container">
@@ -27,14 +27,14 @@ export default {
   components: { PanThumb, GithubCorner },
   data() {
     return {
-      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
+      emptyGif: ''
     }
   },
   computed: {
     ...mapGetters([
       'name',
       'avatar',
-      'roles'
+      'role'
     ])
   }
 }
@@ -51,7 +51,7 @@ export default {
     background-color: #e3e3e3;
     min-height: 100vh;
     padding: 50px 60px 0px;
-    .pan-info-roles {
+    .pan-info-role {
       font-size: 12px;
       font-weight: 700;
       color: #333;
