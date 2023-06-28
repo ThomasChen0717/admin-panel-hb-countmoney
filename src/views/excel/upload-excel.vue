@@ -7,15 +7,10 @@
     </el-table>
     <pagination v-show="total > 0" :total="total" :page.sync="page" :page-sizes="[1]" :limit="1" layout="total, prev, pager, next, jumper" @pagination="getTable" />
     <div class="update-button" style="text-align: center;">
-      <el-button style="margin:auto; margin-top:5vh" type="primary" @click="updateDatabase($event)">
+      <el-button style="margin:auto; margin-top:5vh" type="primary" :loading="loading" @click="updateDatabase($event)">
         更新
       </el-button>
     </div>
-    <el-dialog el-drag-dialog :visible.sync="dialogVisible">
-      <div class="response">
-        <h1>{{ this.response }}</h1>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -28,13 +23,12 @@ export default {
   components: { UploadExcelComponent, Pagination },
   data() {
     return {
-      dialogVisible: false,
+      loading: false,
       excelData: [{ header: [], result: [] }],
       tableData: [],
       tableHeader: [],
       tableTitle: '',
       files: [],
-      response: null,
       page: 1,
       total: 0
     }
@@ -82,6 +76,7 @@ export default {
     },
     updateDatabase(event) {
       event.preventDefault()
+      this.loading = true
       const formData = new FormData()
       this.files.forEach((file) => formData.append('file', file))
       const config = {
@@ -90,13 +85,15 @@ export default {
         }
       }
       upload(formData, config).then(response => {
-        this.response = response.data
-        console.log(response.data)
-        this.dialogVisible = true
+        this.$message({
+                        message: response.message,
+                        type: 'success',
+                        duration: 5 * 1000
+        })
+        this.loading = false
       })
         .catch(error => {
-          // Handle the error
-          console.error(error)
+          this.loading = false
         })
     }
   }

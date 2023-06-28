@@ -77,6 +77,7 @@
           name="displayName"
           tabindex="4"
           autocomplete="on"
+          @keyup.enter.native="handleRegister"
         />
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
@@ -211,7 +212,7 @@ export default {
             this.$router.push('/login')
             this.loading = false
           })
-            .catch(() => {
+            .catch((error) => {
               this.loading = false
             })
         } else {

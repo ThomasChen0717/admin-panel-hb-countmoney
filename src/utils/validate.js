@@ -1,4 +1,4 @@
-import { checkDisplayName, checkUsername } from '@/api/user'
+import { checkDisplayName, checkUsername, checkOldPassword} from '@/api/validate'
 
 /**
  * @param {string} path
@@ -75,22 +75,33 @@ export function isArray(arg) {
   return Array.isArray(arg)
 }
 /**
- * @param {string} Username
+ * @param {Object} username
  * @returns {Boolean}
  */
-export function validUsername(Username) {
-  return checkUsername(Username).then(response => {
+export function validUsername(username) {
+  return checkUsername(username).then(response => {
     const { data } = response
     return data
   })
 }
 
 /**
- * @param {string} DisplayName
+ * @param {Object} displayName
  * @returns {Boolean}
  */
-export function validDisplayName(DisplayName) {
-  return checkDisplayName(DisplayName).then(response => {
+export function validDisplayName(displayName) {
+  return checkDisplayName(displayName).then(response => {
+    const { data } = response
+    return data
+  })
+}
+
+/**
+ * @param {Object} oldPassword
+ * @returns {Boolean}
+ */
+export function validOldPassword(oldPassword) {
+  return checkOldPassword(oldPassword).then(response => {
     const { data } = response
     return data
   })

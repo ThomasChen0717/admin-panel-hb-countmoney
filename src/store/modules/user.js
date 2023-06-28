@@ -6,7 +6,8 @@ const state = {
   token: getToken(),
   name: '',
   avatar: '',
-  role: ''
+  role: '',
+  id: null
 }
 
 const mutations = {
@@ -21,6 +22,9 @@ const mutations = {
   },
   SET_ROLE: (state, role) => {
     state.role = role
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   }
 }
 
@@ -50,7 +54,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { role, name, avatar } = data
+        const { role, name, avatar, id} = data
 
         if (!role) {
           reject('getInfo: role must be a non-null value!')
@@ -59,6 +63,7 @@ const actions = {
         commit('SET_ROLE', role)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
+        commit('SET_ID', id)
         resolve(data)
       }).catch(error => {
         reject(error)

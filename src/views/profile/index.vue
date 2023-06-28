@@ -10,14 +10,14 @@
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
-              <el-tab-pane label="Activity" name="activity">
-                <activity />
+              <el-tab-pane label="账号" name="account">
+                <account :user="user"/>
               </el-tab-pane>
-              <el-tab-pane label="Timeline" name="timeline">
-                <timeline />
+              <el-tab-pane label="密码" name="password">
+                <password :user="user"/>
               </el-tab-pane>
-              <el-tab-pane label="Account" name="account">
-                <account :user="user" />
+              <el-tab-pane label="头像" name="Avatar">
+                <avatar :user="user"/>
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -31,24 +31,25 @@
 <script>
 import { mapGetters } from 'vuex'
 import UserCard from './components/UserCard'
-import Activity from './components/Activity'
-import Timeline from './components/Timeline'
 import Account from './components/Account'
+import Password from './components/Password'
+import Avatar from './components/Avatar'
 
 export default {
   name: 'Profile',
-  components: { UserCard, Activity, Timeline, Account },
+  components: { UserCard, Account, Password, Avatar},
   data() {
     return {
       user: {},
-      activeTab: 'activity'
+      activeTab: 'account'
     }
   },
   computed: {
     ...mapGetters([
       'name',
       'avatar',
-      'role'
+      'role',
+      'id'
     ])
   },
   created() {
@@ -59,8 +60,8 @@ export default {
       this.user = {
         name: this.name,
         role: this.role,
-        email: 'admin@test.com',
-        avatar: this.avatar
+        avatar: this.avatar,
+        id:this.id
       }
     }
   }
