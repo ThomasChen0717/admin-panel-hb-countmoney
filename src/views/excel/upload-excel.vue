@@ -74,7 +74,7 @@ export default {
       this.total = this.excelData.length
       this.getTable()
     },
-    updateDatabase(event) {
+    async updateDatabase(event) {
       event.preventDefault()
       this.loading = true
       const formData = new FormData()
@@ -86,12 +86,12 @@ export default {
       }
       upload(formData, config).then(response => {
         this.$message({
-                        message: response.message,
-                        type: 'success',
-                        duration: 5 * 1000
+          message: response.message,
+          type: 'success',
+          duration: 5 * 1000
         })
         this.loading = false
-      })
+        })
         .catch(error => {
           this.loading = false
         })

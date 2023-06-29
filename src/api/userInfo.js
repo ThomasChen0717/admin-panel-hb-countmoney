@@ -1,17 +1,17 @@
 import request from '@/utils/request'
 
-export function changePassword(data){
+export function changePassword(data) {
   return request({
-    url:'/webInfo/changePassword',
-    method: "post",
-    data:data
+    url: '/webInfo/changePassword',
+    method: 'post',
+    data: data
   })
 }
 
-export function changeName(data){
+export function changeName(data) {
   return request({
-    url:'/webInfo/changeName',
-    method: "post",
+    url: '/webInfo/changeName',
+    method: 'post',
     data: data
   })
 }

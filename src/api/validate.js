@@ -22,7 +22,7 @@ export function checkDisplayName(data) {
   })
 }
 
-export function checkOldPassword(data){
+export function checkOldPassword(data) {
   return request({
     url: '/webValidate/checkOldPassword',
     method: 'post',

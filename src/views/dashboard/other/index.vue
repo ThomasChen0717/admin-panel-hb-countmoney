@@ -1,14 +1,10 @@
 <template>
-  <div class="dashboard-editor-container">
+  <div class="dashboard-other-container">
     <div class=" clearfix">
-      <pan-thumb :image="avatar" style="float: left">
-        Your role:
-        <span key="role" class="pan-info-role">{{ role }}</span>
-      </pan-thumb>
-      <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
+      <pan-thumb :image="avatar" style="float: left"/>
       <div class="info-container">
         <span class="display_name">{{ name }}</span>
-        <span style="font-size:20px;padding-top:20px;display:inline-block;">Editor's Dashboard</span>
+        <span style="font-size:20px;padding-top:20px;display:inline-block;">{{ role }} 的主页</span>
       </div>
     </div>
     <div>
@@ -20,11 +16,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import PanThumb from '@/components/PanThumb'
-import GithubCorner from '@/components/GithubCorner'
 
 export default {
-  name: 'DashboardEditor',
-  components: { PanThumb, GithubCorner },
+  name: 'DashboardOther',
+  components: { PanThumb},
   data() {
     return {
       emptyGif: ''
@@ -47,16 +42,10 @@ export default {
     margin: 0 auto;
   }
 
-  .dashboard-editor-container {
+  .dashboard-other-container {
     background-color: #e3e3e3;
     min-height: 100vh;
     padding: 50px 60px 0px;
-    .pan-info-role {
-      font-size: 12px;
-      font-weight: 700;
-      color: #333;
-      display: block;
-    }
     .info-container {
       position: relative;
       margin-left: 190px;

@@ -24,7 +24,7 @@ router.beforeEach(async(to, from, next) => {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
-      NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
+      NProgress.done()
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       const hasRole = store.getters.role
@@ -34,10 +34,9 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           const { role } = await store.dispatch('user/getInfo')
-
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', role)
-
+        
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
 

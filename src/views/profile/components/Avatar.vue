@@ -1,6 +1,9 @@
 <template>
-    <div>
-    <input ref="avatar-upload-input" class="avatar-upload-input" type="file" accept = "image/png, image/jpeg" @change="handleFileChange">
+  <div>
+    <div class="title-container">
+      <h3 class="title">更改头像</h3>
+    </div>
+    <input ref="avatar-upload-input" class="avatar-upload-input" type="file" accept="image/png, image/jpeg" @change="handleFileChange">
     <div class="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
       将文件拖到这里或
       <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="openFilePicker">
@@ -10,7 +13,7 @@
 
     <!-- Temporary preview of the uploaded image -->
     <div v-if="imageDataUrl" class="image-preview">
-      <img :src="imageDataUrl" alt="Uploaded Image" />
+      <img :src="imageDataUrl" alt="Uploaded Image">
     </div>
 
     <!-- Button to initiate the database update -->
@@ -19,12 +22,12 @@
     </el-button>
   </div>
 </template>
-  
+
 <script>
-import {uploadAvatar} from '@/api/userInfo'
-export default{
-    name: 'changeAvatar',
-    props: {
+import { uploadAvatar } from '@/api/userInfo'
+export default {
+  name: 'ChangeAvatar',
+  props: {
     user: {
       type: Object,
       default: () => {
@@ -34,60 +37,60 @@ export default{
       }
     }
   },
-    data() {
-        return {
-            loading: false,
-            saving: false,
-            file: null,
-            imageDataUrl: null
-        };
-    },
-    methods: {
-        handleFileChange(e) {
-            this.file = e.target.files[0];
-            this.previewImage();
-        },
-        handleDrop(e) {
-            e.preventDefault();
-            this.file = e.dataTransfer.files[0];
-            this.previewImage();
-        },
-        handleDragover(e) {
-            e.preventDefault();
-        },
-        openFilePicker() {
-            this.$refs['avatar-upload-input'].click();
-        },
-        previewImage() {
-            if (this.file) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    this.imageDataUrl = reader.result;
-                };
-                reader.readAsDataURL(this.file);
-            }
-        },
-        saveImageToDatabase() {
-            if (this.file) {
-                this.saving = true;
-                const formData = new FormData();
-                formData.append('image', this.file);
-                formData.append('id', this.user.id)
-
-                uploadAvatar(formData).then((response) => {
-                    this.$message({
-                            message: response.message,
-                            type: 'success',
-                            duration: 5 * 1000
-                    })
-                    this.saving = false
-                })
-                .catch(error => {
-                    this.saving = false
-                })
-            }
-        }        
+  data() {
+    return {
+      loading: false,
+      saving: false,
+      file: null,
+      imageDataUrl: null
     }
+  },
+  methods: {
+    handleFileChange(e) {
+      this.file = e.target.files[0]
+      this.previewImage()
+    },
+    handleDrop(e) {
+      e.preventDefault()
+      this.file = e.dataTransfer.files[0]
+      this.previewImage()
+    },
+    handleDragover(e) {
+      e.preventDefault()
+    },
+    openFilePicker() {
+      this.$refs['avatar-upload-input'].click()
+    },
+    previewImage() {
+      if (this.file) {
+        const reader = new FileReader()
+        reader.onload = () => {
+          this.imageDataUrl = reader.result
+        }
+        reader.readAsDataURL(this.file)
+      }
+    },
+    async saveImageToDatabase() {
+      if (this.file) {
+        this.saving = true
+        const formData = new FormData()
+        formData.append('image', this.file)
+        formData.append('id', this.user.id)
+
+        uploadAvatar(formData).then((response) => {
+          this.$message({
+            message: response.message,
+            type: 'success',
+            duration: 5 * 1000
+          })
+          this.saving = false
+        })
+          .catch(error => {
+            this.saving = false
+          })
+      }
+    }
+  }
 }
 </script>
 
@@ -122,4 +125,3 @@ export default{
     }
 
 </style>
-  

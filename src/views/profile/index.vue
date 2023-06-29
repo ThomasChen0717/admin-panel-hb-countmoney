@@ -11,13 +11,13 @@
           <el-card>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="账号" name="account">
-                <account :user="user"/>
+                <account :user="user" />
               </el-tab-pane>
               <el-tab-pane label="密码" name="password">
-                <password :user="user"/>
+                <password :user="user" />
               </el-tab-pane>
               <el-tab-pane label="头像" name="Avatar">
-                <avatar :user="user"/>
+                <avatar :user="user" />
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -37,7 +37,7 @@ import Avatar from './components/Avatar'
 
 export default {
   name: 'Profile',
-  components: { UserCard, Account, Password, Avatar},
+  components: { UserCard, Account, Password, Avatar },
   data() {
     return {
       user: {},
@@ -61,7 +61,7 @@ export default {
         name: this.name,
         role: this.role,
         avatar: this.avatar,
-        id:this.id
+        id: this.id
       }
     }
   }

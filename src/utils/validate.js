@@ -1,4 +1,4 @@
-import { checkDisplayName, checkUsername, checkOldPassword} from '@/api/validate'
+import { checkDisplayName, checkUsername, checkOldPassword } from '@/api/validate'
 
 /**
  * @param {string} path
