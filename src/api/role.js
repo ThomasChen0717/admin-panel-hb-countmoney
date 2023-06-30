@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function getRoles(data) {
   return request({
     url: '/router/getRoles',
@@ -9,9 +8,9 @@ export function getRoles(data) {
   })
 }
 
-export function getRoleInfo(){
+export function getRoleInfo() {
   return request({
-    url:'/router/getRoles',
+    url: '/router/getRoles',
     method: 'post'
   })
 }
@@ -23,7 +22,7 @@ export function addRole(data) {
     headers: {
       'Content-Type': 'application/json'
     },
-    data:data
+    data: data
   })
 }
 

@@ -6,7 +6,7 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
-import {getRoles} from '@/api/role'
+import { getRoles } from '@/api/role'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -96,7 +96,7 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user', noCache: true }
       }
     ]
-  },
+  }
 ]
 /**
  * asyncRoutes
@@ -122,7 +122,7 @@ export const asyncRoutes = [
         meta: {
           title: '职位权限',
           roles: null
-        },
+        }
       }
     ]
   },
@@ -146,9 +146,28 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/stats',
+    component: Layout,
+    redirect: '/stats/user-online-table',
+    alwaysShow: true,
+    name: 'Stats',
+    meta: {
+      title: '统计数据',
+      icon: 'chart',
+      roles: null
+    },
+    children: [
+      {
+        path: 'user-online-table',
+        component: () => import('@/views/stats/user-online-table'),
+        name: 'UserOnlineTable',
+        meta: { title: '在线人数（表格）', roles: null }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
-
 
 const createRouter = () => new Router({
   scrollBehavior: () => ({ y: 0 }),
@@ -163,25 +182,25 @@ async function updateAsyncRouteRoles() {
     asyncRoutes.forEach((route) => {
       if (!route.hidden) {
         getRoles({ routeName: route.name }).then((response) => {
-          route.meta.roles = '[' + response.data + ']';
+          route.meta.roles = '[' + response.data + ']'
         })
         if (route.children) {
           route.children.forEach((childRoute) => {
             getRoles({ routeName: childRoute.name }).then((response) => {
-              childRoute.meta.roles = '[' + response.data + ']';
+              childRoute.meta.roles = '[' + response.data + ']'
             })
           })
         }
       }
     })
-  resetRouter() 
+    resetRouter()
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
 }
 
 // Call the function to update the roles when the application starts
-updateAsyncRouteRoles();
+updateAsyncRouteRoles()
 
 export function resetRouter() {
   const newRouter = createRouter()

@@ -10,8 +10,8 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)" v-if="scope.row.name !== 'admin'">修改</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)" v-if="scope.row.name !== 'admin'">删除</el-button>
+          <el-button v-if="scope.row.name !== 'admin'" type="primary" size="small" @click="handleEdit(scope)">修改</el-button>
+          <el-button v-if="scope.row.name !== 'admin'" type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -47,7 +47,7 @@ import { deepClone } from '@/utils'
 import { getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 import { mapGetters } from 'vuex'
 import { filterAsyncRoutes } from '@/store/modules/permission'
-import {asyncRoutes} from '@/router/index'
+import { asyncRoutes } from '@/router/index'
 
 const defaultRole = {
   name: '',
@@ -89,8 +89,8 @@ export default {
       this.routes = this.generateRoutes(res)
     },
     async getAllRoles() {
-      const res = await getRoles({routeName: "AllRoles"})
-      this.rolesList =  res.data.map(roleName => ({ name: roleName.replace(/'/g, ''), routes: filterAsyncRoutes(asyncRoutes, roleName.replace(/'/g, ''))}));
+      const res = await getRoles({ routeName: 'AllRoles' })
+      this.rolesList = res.data.map(roleName => ({ name: roleName.replace(/'/g, ''), routes: filterAsyncRoutes(asyncRoutes, roleName.replace(/'/g, '')) }))
     },
 
     // Reshape the routes structure so that it looks the same as the sidebar
@@ -148,7 +148,6 @@ export default {
       this.dialogVisible = true
       this.checkStrictly = false
       this.role = deepClone(scope.row)
-      console.log(this.role)
       this.$nextTick(() => {
         const routes = this.generateRoutes(this.role.routes)
         this.$refs.tree.setCheckedNodes(this.generateArr(routes))
@@ -171,11 +170,11 @@ export default {
         })
         .catch(err => { console.error(err) })
     },
-    generateTree(routes, basePath = '/', checkedKeys,) {
+    generateTree(routes, basePath = '/', checkedKeys) {
       const res = []
       for (const route of routes) {
         const routePath = path.resolve(basePath, route.path)
-        
+
         // recursive child routes
         if (route.children) {
           route.children = this.generateTree(route.children, routePath, checkedKeys, res)
@@ -184,7 +183,7 @@ export default {
         if (checkedKeys.includes(routePath)) {
           res.push(route)
         }
-        if(route.children && route.children.length >= 1){
+        if (route.children && route.children.length >= 1) {
           res.push(...route.children)
         }
       }
@@ -205,8 +204,8 @@ export default {
           }
         }
       } else {
-          await addRole(this.role);
-          this.rolesList.push(this.role);
+        await addRole(this.role)
+        this.rolesList.push(this.role)
       }
 
       const { name } = this.role

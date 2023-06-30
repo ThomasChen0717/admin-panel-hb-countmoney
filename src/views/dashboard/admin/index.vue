@@ -19,7 +19,7 @@ import PanThumb from '@/components/PanThumb'
 
 export default {
   name: 'DashboardEditor',
-  components: { PanThumb},
+  components: { PanThumb },
   data() {
     return {
       emptyGif: ''

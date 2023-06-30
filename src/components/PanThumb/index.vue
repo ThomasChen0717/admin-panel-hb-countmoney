@@ -127,5 +127,4 @@ export default {
   transform: translateX(60px) rotate(90deg);
 }
 
-
 </style>

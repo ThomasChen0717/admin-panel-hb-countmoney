@@ -12,7 +12,7 @@
         @keyup.enter.native="submit"
       />
     </el-form-item>
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="submit">更新</el-button>
+    <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="submit">更新</el-button>
   </el-form>
 </template>
 
@@ -59,8 +59,8 @@ export default {
     }
   },
 
-  mounted(){
-    if(this.profileForm.displayName === ''){
+  mounted() {
+    if (this.profileForm.displayName === '') {
       this.$refs.displayName.focus()
     }
   },

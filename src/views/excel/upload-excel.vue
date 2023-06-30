@@ -16,7 +16,7 @@
 
 <script>
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-import { upload } from '@/api/excel'
+import { upload } from '@/api/database'
 import Pagination from '@/components/Pagination'
 export default {
   name: 'UploadExcel',
@@ -91,7 +91,7 @@ export default {
           duration: 5 * 1000
         })
         this.loading = false
-        })
+      })
         .catch(error => {
           this.loading = false
         })

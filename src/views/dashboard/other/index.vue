@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-other-container">
     <div class=" clearfix">
-      <pan-thumb :image="avatar" style="float: left"/>
+      <pan-thumb :image="avatar" style="float: left" />
       <div class="info-container">
         <span class="display_name">{{ name }}</span>
         <span style="font-size:20px;padding-top:20px;display:inline-block;">{{ role }} 的主页</span>
@@ -19,7 +19,7 @@ import PanThumb from '@/components/PanThumb'
 
 export default {
   name: 'DashboardOther',
-  components: { PanThumb},
+  components: { PanThumb },
   data() {
     return {
       emptyGif: ''
