@@ -163,6 +163,12 @@ export const asyncRoutes = [
         component: () => import('@/views/stats/user-online-table'),
         name: 'UserOnlineTable',
         meta: { title: '在线人数（表格）', roles: null }
+      },
+      {
+        path: 'user-online-graph',
+        component: () => import('@/views/stats/user-online-graph'),
+        name: 'UserOnlineGraph',
+        meta: { title: '在线人数（图）', roles: null }
       }
     ]
   },

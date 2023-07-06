@@ -1,14 +1,18 @@
 <template>
     <div class="app-container">
-        <el-date-picker v-model="selectedDay" type="date" @change="getData"></el-date-picker>
-        <el-select v-model="selectedHour" @change="getData">
-            <el-option
-                v-for="hour in hours"
-                :key="hour.value"
-                :label="hour.label"
-                :value="hour.value"
-            />
-        </el-select>
+        <label style="font-weight: normal;"> 日期:
+            <el-date-picker v-model="selectedDay" type="date" @change="getData"></el-date-picker>
+        </label>
+        <label style="font-weight: normal;"> 时间:
+            <el-select v-model="selectedHour" @change="getData">
+                <el-option
+                    v-for="hour in hours"
+                    :key="hour.value"
+                    :label="hour.label"
+                    :value="hour.value"
+                />
+            </el-select>
+        </label>
         <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
             <el-table-column v-for="item of tableHeader" :key="item.key" :prop="item.key" :label="item.label" />
         </el-table>
@@ -43,16 +47,18 @@ export default {
     },
     methods:{
         async getData(){
-            const adjustedDate = new Date(this.selectedDay.getTime() + 8 * 60 * 60 * 1000);
-            let data = {
-                date: adjustedDate,
-                hour: this.selectedHour
-            };
-            getUserCount(data).then(response => {
-                this.tableData = response.data
-            })
-            .catch(error => {
-            })
+            if(this.selectedDay != null){
+                const adjustedDate = new Date(this.selectedDay.getTime() + 8 * 60 * 60 * 1000);
+                let data = {
+                    date: adjustedDate,
+                    hour: this.selectedHour
+                };
+                getUserCount(data).then(response => {
+                    this.tableData = response.data
+                })
+                .catch(error => {
+                })
+            }
         }
     }
 }

@@ -17,3 +17,10 @@ export function getUserCount(data) {
   })
 }
 
+export function getUserCountGraph(data) {
+  return request({
+    url: '/database/getUserCountGraph',
+    method: 'post',
+    data: data
+  })
+}
