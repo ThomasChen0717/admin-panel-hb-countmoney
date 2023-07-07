@@ -16,7 +16,7 @@
 
 <script>
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-import { upload } from '@/api/database'
+import { upload } from '@/api/excel'
 import Pagination from '@/components/Pagination'
 export default {
   name: 'UploadExcel',
@@ -84,17 +84,19 @@ export default {
           'Content-Type': 'multipart/form-data'
         }
       }
-      upload(formData, config).then(response => {
-        this.$message({
+      upload(formData, config)
+      .then(response => {
+        this.$notify({
+          title: 'Success',
           message: response.message,
           type: 'success',
           duration: 5 * 1000
-        })
+        });
         this.loading = false
       })
-        .catch(error => {
-          this.loading = false
-        })
+      .catch(error => {
+        this.loading = false
+      })
     }
   }
 }

@@ -10,13 +10,13 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.name !== 'admin'" type="primary" size="small" @click="handleEdit(scope)">修改</el-button>
-          <el-button v-if="scope.row.name !== 'admin'" type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+          <el-button v-if="scope.row.name !== 'admin'" type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope)">修改</el-button>
+          <el-button v-if="scope.row.name !== 'admin'" type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改权限':'新建权限'">
+    <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="false" :title="dialogType==='edit'?'修改权限':'新建权限'">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="权限名">
           <el-input v-model="role.name" placeholder="权限名" />

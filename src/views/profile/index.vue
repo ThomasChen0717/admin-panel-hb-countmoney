@@ -9,15 +9,15 @@
 
         <el-col :span="18" :xs="24">
           <el-card>
-            <el-tabs v-model="activeTab">
+            <el-tabs v-model="activeTab" @tab-click="handleTabClick">
               <el-tab-pane label="账号" name="account">
-                <account :user="user" />
+                <account :user="user" ref = "account" />
               </el-tab-pane>
               <el-tab-pane label="密码" name="password">
-                <password :user="user" />
+                <password :user="user" ref = "password"/>
               </el-tab-pane>
-              <el-tab-pane label="头像" name="Avatar">
-                <avatar :user="user" />
+              <el-tab-pane label="头像" name="avatar">
+                <avatar :user="user" ref = "avatar"/>
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -62,6 +62,16 @@ export default {
         role: this.role,
         avatar: this.avatar,
         id: this.id
+      }
+    },
+    handleTabClick(tab) {
+      if (tab.name === 'account') {
+        this.$refs.account.$refs.profileForm.resetFields();
+      } else if (tab.name === 'password') {
+        this.$refs.password.$refs.changePasswordForm.resetFields();
+      } else{
+        this.$refs.avatar.file = null;
+        this.$refs.avatar.imageDataUrl = null;
       }
     }
   }

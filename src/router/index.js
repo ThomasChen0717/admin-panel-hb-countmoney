@@ -140,9 +140,15 @@ export const asyncRoutes = [
     children: [
       {
         path: 'upload-excel',
-        component: () => import('@/views/excel/upload-excel'),
+        component: () => import('@/views/database/upload-excel'),
         name: 'UploadExcel',
         meta: { title: '上传Excel表格至数据库', roles: null }
+      },
+      {
+        path: 'client-version',
+        component: () => import('@/views/database/client-version'),
+        name: 'ClientVersion',
+        meta: { title: '版本管理', roles: null }
       }
     ]
   },

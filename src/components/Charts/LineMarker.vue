@@ -1,6 +1,5 @@
 <template>
-  <div :id="id" :class="className" :style="{height:height,width:width}">
-  </div>
+  <div :id="id" :class="className" :style="{height:height,width:width}" />
 </template>
 
 <script>
@@ -26,16 +25,25 @@ export default {
       type: String,
       default: '200px'
     },
-    chartData:{
+    chartData: {
       type: Array
     },
-    hour:{
-      type:String
+    hour: {
+      type: String
     }
   },
   data() {
     return {
       chart: null
+    }
+  },
+
+  watch: {
+    chartData: {
+      handler(newData) {
+        this.updateChart(newData)
+      },
+      deep: true
     }
   },
   mounted() {
@@ -49,22 +57,13 @@ export default {
     this.chart = null
   },
 
-  watch: {
-    chartData: {
-      handler(newData) {
-        this.updateChart(newData)
-      },
-      deep: true
-    }
-  },
-
   methods: {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
       this.updateChart(this.chartData)
     },
 
-    updateChart(data){
+    updateChart(data) {
       this.chart.clear()
       this.chart.setOption({
         backgroundColor: '#394056',
@@ -92,7 +91,7 @@ export default {
           itemWidth: 14,
           itemHeight: 5,
           itemGap: 13,
-          data: ['在线用户','缓存用户'],
+          data: ['在线用户', '缓存用户'],
           right: '4%',
           textStyle: {
             fontSize: 12,
@@ -111,12 +110,12 @@ export default {
           boundaryGap: false,
           axisLine: {
             lineStyle: {
-              color: '#57617B'
+              color: 'grey'
             }
           },
-          data: 
+          data:
             Array.from({ length: 12 }, (_, i) => {
-              return this.hour + ":" + String(i * 5).padStart(2, '0');
+              return this.hour + ':' + String(i * 5).padStart(2, '0')
             })
         }],
         yAxis: [{
@@ -126,7 +125,7 @@ export default {
           },
           axisLine: {
             lineStyle: {
-              color: '#57617B'
+              color: 'grey'
             }
           },
           axisLabel: {
@@ -137,7 +136,7 @@ export default {
           },
           splitLine: {
             lineStyle: {
-              color: '#57617B'
+              color: 'grey'
             }
           }
         }],
@@ -175,7 +174,7 @@ export default {
             }
           },
           data: this.chartData.map((dataPoint) => dataPoint.onlineUserCount)
-        }, 
+        },
         {
           name: '缓存用户',
           type: 'line',
