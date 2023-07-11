@@ -19,7 +19,7 @@
     <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="false" :title="dialogType==='edit'?'修改权限':'新建权限'">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="权限名">
-          <el-input v-model="role.name" placeholder="权限名" />
+          <el-input ref = "name" v-model="role.name" placeholder="权限名" @keyup.enter.native = "confirmRole"/>
         </el-form-item>
         <el-form-item label="路由">
           <el-tree
@@ -30,6 +30,7 @@
             show-checkbox
             node-key="path"
             class="permission-tree"
+            @check="handleNodeClick"
           />
         </el-form-item>
       </el-form>
@@ -60,6 +61,8 @@ export default {
       role: Object.assign({}, defaultRole),
       routes: [],
       rolesList: [],
+      serviceRoutes: [],
+      tempName: "",
       dialogVisible: false,
       dialogType: 'new',
       checkStrictly: false,
@@ -141,18 +144,18 @@ export default {
       }
       this.dialogType = 'new'
       this.dialogVisible = true
-      this.checkStrictly = false
+      this.checkStrictly = true
     },
     handleEdit(scope) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.checkStrictly = false
       this.role = deepClone(scope.row)
+      this.tempName = this.role.name
       this.$nextTick(() => {
         const routes = this.generateRoutes(this.role.routes)
         this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-        // set checked state of a node not affects its father and child nodes
       })
+      this.dialogType = 'edit'
+      this.dialogVisible = true
+      this.checkStrictly = true
     },
     handleDelete({ $index, row }) {
       this.$confirm('确定要删除吗?', '警告', {
@@ -189,22 +192,24 @@ export default {
       }
       return res
     },
-    async confirmRole() {
+    confirmRole() {
       const isEdit = this.dialogType === 'edit'
 
       const checkedKeys = this.$refs.tree.getCheckedKeys()
       this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
-
       if (isEdit) {
-        await updateRole(this.role)
-        for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].name === this.role.name) {
-            this.rolesList.splice(index, 1, Object.assign({}, this.role))
-            break
-          }
+        const index = this.rolesList.findIndex(role => role.name === this.tempName)
+        if (index !== -1) {
+          // Update the name property of the row directly
+          this.rolesList[index].name = this.role.name
+          this.rolesList[index].routes = this.role.routes
         }
+        const formData = new FormData();
+        formData.append('body', JSON.stringify(this.role));
+        formData.append('oldName', this.tempName);
+        updateRole(formData)
       } else {
-        await addRole(this.role)
+        addRole(this.role)
         this.rolesList.push(this.role)
       }
 
@@ -238,9 +243,60 @@ export default {
       }
 
       return false
+    }, 
+    handleNodeClick(nodeData) {
+        // Get the parent node
+        const parentNode = this.findParent(nodeData)
+
+        const checkedKeys = this.$refs.tree.getCheckedKeys();
+
+        if (parentNode) {
+          const parentKey = parentNode[this.$refs.tree.nodeKey];
+
+          // Check if the parent node is not already selected
+          if (!checkedKeys.includes(parentKey)) {
+            this.$refs.tree.setChecked(parentNode, true);
+          }
+        } 
+
+        if(nodeData.children){
+          const key = nodeData[this.$refs.tree.nodeKey]
+          if(!checkedKeys.includes(key)){
+            for(const child of nodeData.children){
+              const childKey = child[this.$refs.tree.nodeKey]
+              if(checkedKeys.includes(childKey)){
+                this.$refs.tree.setChecked(child, false);
+              }
+            }
+          } else if(checkedKeys.includes(key)){
+            for(const child of nodeData.children){
+              const childKey = child[this.$refs.tree.nodeKey]
+              if(!checkedKeys.includes(childKey)){
+                this.$refs.tree.setChecked(child, true);
+              }
+            }
+          }
+        }
+    },
+
+    findParent(nodeData){
+      for(const route of this.routes){
+        if(route !== nodeData && this.isParent(nodeData, route)){
+          return route
+        }
+      }
+      return null
+    },
+
+    isParent(node, parent){
+      if(parent.children){
+        return parent.children.includes(node)
+      }
+      return false;
     }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

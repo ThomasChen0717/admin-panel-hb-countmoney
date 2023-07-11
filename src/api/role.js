@@ -30,9 +30,6 @@ export function updateRole(data) {
   return request({
     url: '/router/updateRole',
     method: 'post',
-    headers: {
-      'Content-Type': 'application/json'
-    },
     data: data
   })
 }

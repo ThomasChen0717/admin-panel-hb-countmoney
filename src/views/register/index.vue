@@ -209,6 +209,11 @@ export default {
         if (valid) {
           this.loading = true
           this.registerUser(this.registerForm).then(() => {
+            this.$notify({
+              title: '注册成功！',
+              dangerouslyUseHTMLString: true,
+              type: 'success'
+          })
             this.$router.push('/login')
             this.loading = false
           })

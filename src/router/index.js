@@ -193,12 +193,12 @@ async function updateAsyncRouteRoles() {
     // Update roles for async routes
     asyncRoutes.forEach((route) => {
       if (!route.hidden) {
-        getRoles({ routeName: route.name }).then((response) => {
+          getRoles({ routeName: route.name }).then((response) => {
           route.meta.roles = '[' + response.data + ']'
         })
         if (route.children) {
           route.children.forEach((childRoute) => {
-            getRoles({ routeName: childRoute.name }).then((response) => {
+              getRoles({ routeName: childRoute.name }).then((response) => {
               childRoute.meta.roles = '[' + response.data + ']'
             })
           })

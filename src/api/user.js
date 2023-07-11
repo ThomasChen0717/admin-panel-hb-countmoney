@@ -22,3 +22,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function register(data){
+  return request({
+    url: '/webLogin/register',
+    method: 'post',
+    data: data
+  })
+}
