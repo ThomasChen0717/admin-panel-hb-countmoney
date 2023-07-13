@@ -155,9 +155,8 @@ export const asyncRoutes = [
   {
     path: '/stats',
     component: Layout,
-    redirect: '/stats/user-online-table',
-    alwaysShow: true,
     name: 'Stats',
+    alwaysShow: true,
     meta: {
       title: '统计数据',
       icon: 'chart',
@@ -165,16 +164,40 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'user-online-table',
-        component: () => import('@/views/stats/user-online-table'),
-        name: 'UserOnlineTable',
-        meta: { title: '在线人数（表格）', roles: null }
+        path: 'user-online',
+        component: () => import('@/views/stats/user-online/index'),
+        name: 'UserOnline',
+        alwaysShow: true,
+        meta: { title: '在线人数', roles: null },
+        children: [
+          {
+            path: 'table',
+            component: () => import('@/views/stats/user-online/table'),
+            name: 'UserOnlineTable',
+            meta: { title: '表格', roles: null }
+          },
+          {
+            path: 'graph',
+            component: () => import('@/views/stats/user-online/graph'),
+            name: 'UserOnlineGraph',
+            meta: { title: '图', roles: null }
+          }
+        ]
       },
       {
-        path: 'user-online-graph',
-        component: () => import('@/views/stats/user-online-graph'),
-        name: 'UserOnlineGraph',
-        meta: { title: '在线人数（图）', roles: null }
+        path: 'activity-report',
+        component: () => import('@/views/stats/activity-report/index'),
+        name: 'ActivityReport',
+        alwaysShow: true,
+        meta: { title: '用户活跃', roles: null },
+        children: [
+          {
+            path: 'activity',
+            component: () => import('@/views/stats/activity-report/activity'),
+            name: 'Activity',
+            meta: { title: '活跃统计', roles: null }
+          },
+        ]
       }
     ]
   },

@@ -28,19 +28,20 @@
 </template>
 
 <script>
-import Chart from '@/components/Charts/LineMarker'
+import Chart from '@/components/Charts/userOnlineChart.vue'
 import { getUserCountGraph } from '@/api/database'
 export default {
-  name: 'LineChart',
+  name: 'UserOnlineGraphChart',
   components: { Chart },
   data() {
+    const currentHour = new Date().getHours();
     return {
       selectedLogicServer: 100,
       selectedDay: new Date(),
       hours: [
         ...Array.from({ length: 24 }, (_, i) => ({ label: String(i).padStart(2, '0') + ':00 - ' + String(i).padStart(2, '0') + ':59', value: String(i).padStart(2, '0') })) // Generate an array of hours from 00 to 23
       ],
-      selectedHour: '00',
+      selectedHour: String(currentHour).padStart(2, '0'),
       chartData: []
     }
   },

@@ -104,12 +104,6 @@ export default {
         // skip some route
         if (route.hidden || route.path === '/') { continue }
 
-        const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
-
-        if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-          route = onlyOneShowingChild
-        }
-
         const data = {
           path: path.resolve(basePath, route.path),
           title: route.meta && route.meta.title,
@@ -166,9 +160,14 @@ export default {
         .then(async() => {
           await deleteRole(row.name)
           this.rolesList.splice($index, 1)
-          this.$message({
-            type: '成功!',
-            message: '删除成功！'
+          const { name } = this.role
+          this.$notify({
+            title: '删除成功！',
+            dangerouslyUseHTMLString: true,
+            message: `
+              <div>Role Name: ${name}</div>
+            `,
+            type: 'success'
           })
         })
         .catch(err => { console.error(err) })
@@ -192,7 +191,7 @@ export default {
       }
       return res
     },
-    confirmRole() {
+    async confirmRole() {
       const isEdit = this.dialogType === 'edit'
 
       const checkedKeys = this.$refs.tree.getCheckedKeys()
@@ -207,82 +206,72 @@ export default {
         const formData = new FormData();
         formData.append('body', JSON.stringify(this.role));
         formData.append('oldName', this.tempName);
-        updateRole(formData)
+        await updateRole(formData)
       } else {
-        addRole(this.role)
+        await addRole(this.role)
         this.rolesList.push(this.role)
       }
 
       const { name } = this.role
       this.dialogVisible = false
       this.$notify({
-        title: '成功！',
+        title: '修改成功！',
         dangerouslyUseHTMLString: true,
         message: `
-            <div>Role Name: ${name}</div>
+            <div>权限名: ${name}</div>
           `,
         type: 'success'
       })
     },
-    // reference: src/view/layout/components/Sidebar/SidebarItem.vue
-    onlyOneShowingChild(children = [], parent) {
-      let onlyOneChild = null
-      const showingChildren = children.filter(item => !item.hidden)
-
-      // When there is only one child route, the child route is displayed by default
-      if (showingChildren.length === 1) {
-        onlyOneChild = showingChildren[0]
-        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
-        return onlyOneChild
-      }
-
-      // Show parent if there are no child route to display
-      if (showingChildren.length === 0) {
-        onlyOneChild = { ... parent, path: '', noShowingChildren: true }
-        return onlyOneChild
-      }
-
-      return false
-    }, 
     handleNodeClick(nodeData) {
         // Get the parent node
-        const parentNode = this.findParent(nodeData)
+        const parentNode = this.findParent(nodeData, this.routes)
 
-        const checkedKeys = this.$refs.tree.getCheckedKeys();
+        const checkedKeys = this.$refs.tree.getCheckedKeys()
 
         if (parentNode) {
-          const parentKey = parentNode[this.$refs.tree.nodeKey];
+          const parentKey = parentNode[this.$refs.tree.nodeKey]
 
-          // Check if the parent node is not already selected
           if (!checkedKeys.includes(parentKey)) {
-            this.$refs.tree.setChecked(parentNode, true);
+            this.$refs.tree.setChecked(parentNode, true)
           }
         } 
-
-        if(nodeData.children){
-          const key = nodeData[this.$refs.tree.nodeKey]
-          if(!checkedKeys.includes(key)){
-            for(const child of nodeData.children){
-              const childKey = child[this.$refs.tree.nodeKey]
-              if(checkedKeys.includes(childKey)){
-                this.$refs.tree.setChecked(child, false);
-              }
-            }
-          } else if(checkedKeys.includes(key)){
-            for(const child of nodeData.children){
-              const childKey = child[this.$refs.tree.nodeKey]
-              if(!checkedKeys.includes(childKey)){
-                this.$refs.tree.setChecked(child, true);
-              }
-            }
-          }
-        }
+        
+        this.traverseChildren(nodeData, checkedKeys);
     },
 
-    findParent(nodeData){
-      for(const route of this.routes){
+    traverseChildren(nodeData, checkedKeys) {
+      if (nodeData.children) {
+        const key =  nodeData[this.$refs.tree.nodeKey]
+        const parentIsChecked = checkedKeys.includes(key)
+
+        for (const child of nodeData.children) {
+          const childKey = child[this.$refs.tree.nodeKey]
+          const isChecked = checkedKeys.includes(childKey)
+          
+          if (parentIsChecked && !isChecked) {
+            this.$refs.tree.setChecked(child, true);
+            checkedKeys.push(childKey)
+          } else if(!parentIsChecked && isChecked) {
+            this.$refs.tree.setChecked(child, false)
+            checkedKeys.splice(checkedKeys.indexOf(childKey), 1)
+          }
+
+          this.traverseChildren(child, checkedKeys);  
+        }
+      }
+    },
+
+    findParent(nodeData, routes){
+      for(const route of routes){
         if(route !== nodeData && this.isParent(nodeData, route)){
           return route
+        }
+        if(route.children){
+          const nestedParent = this.findParent(nodeData, route.children)
+          if (nestedParent) {
+            return nestedParent
+          }
         }
       }
       return null
@@ -292,7 +281,7 @@ export default {
       if(parent.children){
         return parent.children.includes(node)
       }
-      return false;
+      return false
     }
   }
 }

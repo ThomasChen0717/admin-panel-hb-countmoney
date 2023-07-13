@@ -49,3 +49,10 @@ export function deleteClientVersion(data){
     },
   })
 }
+export function getUserActivity(data){
+  return request({
+    url: '/database/getUserActivity',
+    method: 'post',
+    data: data,
+  })
+}
