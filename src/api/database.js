@@ -49,9 +49,18 @@ export function deleteClientVersion(data){
     },
   })
 }
+
 export function getUserActivity(data){
   return request({
     url: '/database/getUserActivity',
+    method: 'post',
+    data: data,
+  })
+}
+
+export function getUserActivityTable(data){
+  return request({
+    url: '/database/getUserActivityTable',
     method: 'post',
     data: data,
   })

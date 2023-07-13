@@ -2,37 +2,39 @@
     <div class="stats-container">
         <el-row>
             <TimeSelector 
-                @count-change="handleCountChange"
+                @range-change="handleTimeRangeChange"
             />
         </el-row>
 
         <el-row>
             <ActiveStats 
-                :active-user-count="activeUserCount"
-                :new-user-count="newUserCount"
-                :total-user-count="totalUserCount"
+                :selectedRange="selectedRange"
             />
         </el-row>
+
+        <el-row>
+            <StatTable 
+                :selectedRange="selectedRange"
+            />
+        </el-row>
+
     </div>
 </template>
 <script>
 import TimeSelector from './components/timeSelector'
 import ActiveStats from './components/activeStats'
+import StatTable from './components/statTable'
 export default {
     name: 'activity',
-    components: {TimeSelector, ActiveStats},
+    components: {TimeSelector, ActiveStats, StatTable},
     data() {
         return {
-            activeUserCount:null,
-            newUserCount: null, 
-            totalUserCount:null
+            selectedRange: []
         }
     }, 
     methods: {
-        handleCountChange({ activeUserCount, newUserCount, totalUserCount }) {
-            this.activeUserCount = activeUserCount;
-            this.newUserCount = newUserCount;
-            this.totalUserCount = totalUserCount;
+        handleTimeRangeChange(range) {
+            this.selectedRange = range
         },
     },
     }

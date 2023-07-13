@@ -12,7 +12,6 @@
   </template>
   
   <script>
-  import {getUserActivity} from "@/api/database"
   export default {
     name: 'TimeSelector',
     data() {
@@ -24,9 +23,6 @@
             timeInterval: 'yesterday',
             selectedRange: [yesterday, yesterdayEnd],
             usedRadio: false,
-            activeUserCount: null,
-            newUserCount: null,
-            totalUserCount: null
         };
     },
     created(){
@@ -40,15 +36,15 @@
         yesterday.setDate(yesterday.getDate() - 1)
         yesterdayEnd.setDate(yesterdayEnd.getDate() - 1)
         if (this.timeInterval === 'yesterday') {
-            this.selectedRange = [yesterday, yesterdayEnd];
+            this.selectedRange = [yesterday, yesterdayEnd]
         } else if (this.timeInterval === 'pastSevenDays') {
-            const startDate = new Date(yesterday);
-            startDate.setDate(startDate.getDate() - 6);
-            this.selectedRange = [startDate, yesterdayEnd];
+            const startDate = new Date(yesterday)
+            startDate.setDate(startDate.getDate() - 6)
+            this.selectedRange = [startDate, yesterdayEnd]
         } else if (this.timeInterval === 'pastThirtyDays') {
-            const startDate = new Date(yesterday);
-            startDate.setDate(startDate.getDate() - 29);
-            this.selectedRange = [startDate, yesterdayEnd];
+            const startDate = new Date(yesterday)
+            startDate.setDate(startDate.getDate() - 29)
+            this.selectedRange = [startDate, yesterdayEnd]
         }
         this.usedRadio = true
         this.handleDateChange();
@@ -57,36 +53,14 @@
       async handleDateChange() {
         if (this.selectedRange != null) {
           if (!this.usedRadio) {
-            this.timeInterval = null;
+            this.timeInterval = null
           } else {
-            this.usedRadio = false;
+            this.usedRadio = false
           }
-          this.adjustDate();
-
-          try {
-            const response = await getUserActivity(this.selectedRange);
-            this.activeUserCount = response.data.activeUserCount;
-            this.newUserCount = response.data.newUserCount;
-            this.totalUserCount = response.data.totalUserCount;
-
-            this.$emit("count-change", {
-              activeUserCount: this.activeUserCount,
-              newUserCount: this.newUserCount,
-              totalUserCount: this.totalUserCount,
-            });
-
-            this.$notify({
-              title: "获取成功！",
-              dangerouslyUseHTMLString: true,
-              message: `
-                <div>日期: ${this.selectedRange ? this.formatDate(this.selectedRange[0]) + ' - ' + this.formatDate(this.selectedRange[1]) : 'N/A'}</div>
-              `,
-              type: "success",
-            });
-          } catch (error) {
-          }
-        }
-    },
+          this.adjustDate()
+          this.$emit("range-change", this.selectedRange);
+    }
+  },
 
       adjustDate(){
             const adjustedStartDate = new Date(this.selectedRange[0])
@@ -99,18 +73,7 @@
             adjustedEndDate.setSeconds(59)
             this.selectedRange[0] = adjustedStartDate
             this.selectedRange[1] = adjustedEndDate
-        },
-
-        formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
-            
-            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-        },
+        }
     },
   };
   </script>
