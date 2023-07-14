@@ -28,6 +28,9 @@
       chartData: {
         type: Array
       },
+      title: {
+        type: String
+      }
     },
     data() {
       return {
@@ -63,6 +66,17 @@
       updateChart(data) {
         this.chart.clear()
         this.chart.setOption({
+          title: {
+            top: 20,
+            text: this.title,
+            textStyle: {
+              fontFamily:'Josefin Sans, sans-serif',
+              fontWeight: 'normal',
+              fontSize: 36,
+              color: 'black'
+            },
+            left: '1%'
+          },
           backgroundColor: 'white',
           tooltip: {
             trigger: 'axis',
@@ -160,7 +174,9 @@
   
               }
             },
-            data: this.chartData.map((dataPoint) => dataPoint.activeUserCount)
+            data: this.chartData
+                  .filter((dataPoint) => dataPoint.time !== '总计')
+                  .map((dataPoint) => dataPoint.activeUserCount)
           },
           {
             name: '新增用户',
@@ -195,7 +211,9 @@
   
               }
             },
-            data: this.chartData.map((dataPoint) => dataPoint.newUserCount)
+            data: this.chartData
+                  .filter((dataPoint) => dataPoint.time !== '总计')
+                  .map((dataPoint) => dataPoint.newUserCount)
           }]
         })
       }

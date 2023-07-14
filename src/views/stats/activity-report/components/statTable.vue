@@ -1,15 +1,15 @@
 <template>
     <div>
         <strong>详细信息</strong>
-        <pagination v-show="total > 0" :total="total" :page.sync="page" :page-sizes="[1]" :limit="1" layout="total, prev, pager, next, jumper" @pagination="getTable" />
-        <h2 class="table-title">{{ tableTitle }}</h2>
-        <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+        <pagination v-show="total > 0" :total="total" :page.sync="page" :page-sizes="[1]" :limit="1" layout="total, prev, pager, next, jumper" :autoScroll = "false" @pagination="getTable" />
+        <h1 class="table-title">{{ tableTitle }}</h1>
+        <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;" row-class-name="bold-row">
             <el-table-column v-for="item of tableHeader" :key="item.key" :prop="item.key" :label="item.label" />
         </el-table>
         <div class = "chart">
-            <Chart height="50vh" width="100%" :chart-data="tableData"/>
+            <Chart height="50vh" width="100%" :chart-data="tableData" :title=tableTitle />
         </div>
-        <pagination v-show="total > 0" :total="total" :page.sync="page" :page-sizes="[1]" :limit="1" layout="total, prev, pager, next, jumper" @pagination="getTable" />
+        <pagination v-show="total > 0" :total="total" :page.sync="page" :page-sizes="[1]" :limit="1" layout="total, prev, pager, next, jumper" :autoScroll = "false" @pagination="getTable" />
     </div>
 </template>
 <script>
@@ -48,8 +48,8 @@ export default {
                 this.allData = response.data
                 this.total = response.data.length
                 this.startDate = newRange[0];
+                this.page = 1
                 this.getTable()
-                this.$emit("allData", this.allData);
             } catch (error) {
             }
         }
@@ -68,8 +68,11 @@ export default {
 <style lang="scss">
     .table-title{ 
         font-family: 'Josefin Sans', sans-serif;
+        font-weight: normal;
+        font-size: 36px;
     }
-    .chart{
-        margin-top: 5vh;
+    .bold-row:nth-child(25){
+        font-weight:bold;
+        font-size:18px;
     }
 </style>

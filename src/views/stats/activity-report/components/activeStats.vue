@@ -93,8 +93,9 @@ export default {
         text-align: center;
     }
     .data .box-card .box-item {
-        font-size: 48px;
+        font-size: 36px;
         text-align: center;
         font-family: 'Josefin Sans', sans-serif;
+        font-weight: normal;
     }
 </style>
